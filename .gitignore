@@ -39,3 +39,7 @@ AGENTS.*.md
 
 # Spec-Driven Development
 .spec/*
+
+.env.*
+!.env.example
+docker-compose.local.yml

@@ -1,0 +1,23 @@
+all: false
+dir: "mock/{{.SrcPackageName}}"
+filename: "mock_{{.SrcPackageName}}.go"
+force-file-write: true
+formatter: goimports
+include-auto-generated: false
+log-level: info
+structname: "{{.Mock}}{{.InterfaceName}}"
+pkgname: "mock{{.SrcPackageName | camelcase | firstUpper}}"
+recursive: true
+require-template-schema-exists: true
+template: testify
+template-schema: "{{.Template}}.schema.json"
+packages:
+  minis/internal/platform:
+    config:
+      all: true
+  minis/internal/file/port:
+    config:
+      all: true
+  minis/internal/file/usecase:
+    config:
+      all: true

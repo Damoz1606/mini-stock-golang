@@ -12,12 +12,6 @@ require-template-schema-exists: true
 template: testify
 template-schema: "{{.Template}}.schema.json"
 packages:
-  minis/internal/platform:
-    config:
-      all: true
-  minis/internal/file/port:
-    config:
-      all: true
-  minis/internal/file/usecase:
+  minis/internal/category/domain:
     config:
       all: true

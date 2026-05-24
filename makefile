@@ -31,6 +31,7 @@ define RUN_SQLC
 	$(CONTAINER_TOOL) run --rm -v $(CURDIR):/src -w /src $(IMAGE_SQLC) generate
 endef
 
+
 # ----------------------
 # Basic commands
 # ----------------------
@@ -39,6 +40,9 @@ run:
 
 lint: 	
 	golangci-lint run
+
+mockery:
+	$(CONTAINER_TOOL) run --rm -v $(CURDIR):/src -w /src vektra/mockery:3
 
 test-unit:
 	set CGO_ENABLED=1 && go test ./internal/... -v

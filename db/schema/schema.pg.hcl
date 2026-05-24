@@ -1,113 +1,147 @@
-schema "public" {}
+schema "public" {
+  comment = "MiniStock public schema"
+}
 
-table "types" {
+table "categories" {
   schema = schema.public
   column "id" {
-    type = uuid
-    null = false
+    type    = uuid
+    null    = false
+    default = sql("gen_random_uuid()")
   }
   column "name" {
-    type = varchar(255)
+    type = text
+    null = false
+  }
+  column "createdAt" {
+    type = bigint
+    null = false
+  }
+  column "updatedAt" {
+    type = bigint
     null = false
   }
   primary_key {
     columns = [column.id]
   }
+  unique "uq_categories_name" {
+    columns = [column.name]
+  }
 }
 
-table "features" {
+table "attributes" {
   schema = schema.public
   column "id" {
+    type    = uuid
+    null    = false
+    default = sql("gen_random_uuid()")
+  }
+  column "categoryId" {
     type = uuid
     null = false
   }
-  column "type_id" {
-    type = uuid
-    null = false
-  }
-  column "feature" {
-    type = varchar(255)
+  column "name" {
+    type = text
     null = false
   }
   column "description" {
     type = text
     null = true
   }
+  column "createdAt" {
+    type = bigint
+    null = false
+  }
+  column "updatedAt" {
+    type = bigint
+    null = false
+  }
   primary_key {
     columns = [column.id]
   }
-  foreign_key "features_type_id_fkey" {
-    columns     = [column.type_id]
-    ref_columns = [table.types.column.id]
-    on_update   = NO_ACTION
-    on_delete   = NO_ACTION
+  foreign_key "fk_attributes_category" {
+    columns     = [column.categoryId]
+    ref_columns = [table.categories.column.id]
+    on_delete   = CASCADE
   }
-  index "idx_features_type_id" {
-    columns = [column.type_id]
+  unique "uq_attributes_category_name" {
+    columns = [column.categoryId, column.name]
   }
 }
 
 table "items" {
   schema = schema.public
   column "id" {
-    type = uuid
-    null = false
+    type    = uuid
+    null    = false
+    default = sql("gen_random_uuid()")
   }
-  column "type_id" {
+  column "categoryId" {
     type = uuid
     null = false
   }
   column "name" {
-    type = varchar(255)
+    type = text
     null = false
   }
   column "description" {
     type = text
     null = true
   }
+  column "createdAt" {
+    type = bigint
+    null = false
+  }
+  column "updatedAt" {
+    type = bigint
+    null = false
+  }
   primary_key {
     columns = [column.id]
   }
-  foreign_key "items_type_id_fkey" {
-    columns     = [column.type_id]
-    ref_columns = [table.types.column.id]
-    on_update   = NO_ACTION
-    on_delete   = NO_ACTION
+  foreign_key "fk_items_category" {
+    columns     = [column.categoryId]
+    ref_columns = [table.categories.column.id]
+    on_delete   = CASCADE
   }
-  index "idx_items_type_id" {
-    columns = [column.type_id]
+  unique "uq_items_category_name" {
+    columns = [column.categoryId, column.name]
   }
 }
 
-table "features_items" {
+table "attributes_items" {
   schema = schema.public
-  column "feature_id" {
+  column "categoryId" {
     type = uuid
     null = false
   }
-  column "item_id" {
+  column "attributeId" {
     type = uuid
     null = false
   }
-  foreign_key "features_items_feature_id_fkey" {
-    columns     = [column.feature_id]
-    ref_columns = [table.features.column.id]
-    on_update   = NO_ACTION
-    on_delete   = NO_ACTION
+  column "itemId" {
+    type = uuid
+    null = false
   }
-  foreign_key "features_items_item_id_fkey" {
-    columns     = [column.item_id]
+  primary_key {
+    columns = [column.categoryId, column.attributeId, column.itemId]
+  }
+  foreign_key "fk_attributes_items_category" {
+    columns     = [column.categoryId]
+    ref_columns = [table.categories.column.id]
+    on_delete   = CASCADE
+  }
+  foreign_key "fk_attributes_items_attribute" {
+    columns     = [column.attributeId]
+    ref_columns = [table.attributes.column.id]
+    on_delete   = CASCADE
+  }
+  foreign_key "fk_attributes_items_item" {
+    columns     = [column.itemId]
     ref_columns = [table.items.column.id]
-    on_update   = NO_ACTION
-    on_delete   = NO_ACTION
+    on_delete   = CASCADE
   }
-  index "idx_features_items_feature_id" {
-    columns = [column.feature_id]
-  }
-  index "idx_features_items_item_id" {
-    columns = [column.item_id]
-  }
-  unique "features_items_feature_id_item_id_key" {
-    columns = [column.feature_id, column.item_id]
+  unique "uq_attributes_items_attribute_item" {
+    columns = [column.attributeId, column.itemId]
   }
 }

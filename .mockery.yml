@@ -12,6 +12,6 @@ require-template-schema-exists: true
 template: testify
 template-schema: "{{.Template}}.schema.json"
 packages:
-  minis/internal/category/domain:
+  github.com/Damoz1606/ministock-backend/internal/category/domain:
     config:
       all: true
